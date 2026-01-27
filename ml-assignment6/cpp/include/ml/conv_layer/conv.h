@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "ml/types.h"
+#include "ml/act_func/type.h"
 #include "ml/conv_layer/interface.h"
 
 namespace ml::conv_layer
@@ -24,7 +25,7 @@ public:
      * @param[in] actFunc Activation function to use (default = none).
      */
     explicit Conv(const std::size_t inputSize, const std::size_t kernelSize, 
-                  const act_func::Type actFunc = act_func::Type::None)
+                  const act_func::Type actFunc = act_func::Type::None);
 
     /** 
      * @brief Destructor. 
@@ -85,5 +86,58 @@ public:
      * @return True on success, false on failure.
      */
     bool optimize(double learningRate) noexcept override;
+
+    Conv()                       = delete; // No default constructor.
+    Conv(const Conv&)            = delete; // No copy constructor.
+    Conv(Conv&&)                 = delete; // No move constructor.
+    Conv& operator=(const Conv&) = delete; // No copy assignment.
+    Conv& operator=(Conv&&)      = delete; // No move assignment.
+
+private:
+
+    /**
+     * @brief Pad input with zeros.
+     * 
+     * @param[in] input Input data.
+     */
+    void padInput(const Matrix2d& input) noexcept;
+
+    /**
+     * @brief Extract input gradients.
+     */
+    void extractInputGradients() noexcept;
+
+    /** Minimum valid kernel size. */
+    static constexpr std::size_t kMinKernelSize{1U};
+
+    /** Minimum valid kernel size. */
+    static constexpr std::size_t kMaxKernelSize{11U};
+
+    // Lägg till medlemsvariabler, bland annat de från stubben. I övrigt, kolla medlemmar från L25.
+
+        /** Input matrix (padded with zeros). */
+    Matrix2d myInputPadded;
+
+    /** Input gradient matrix (padded with zeros). */
+    Matrix2d myInputGradientsPadded;
+
+    /** Input gradient matrix (without padding). */
+    Matrix2d myInputGradients;
+
+    /** Kernel matrix (holding weights). */
+    Matrix2d myKernel;
+
+    /** Kernel gradient matrix. */
+    Matrix2d myKernelGradients;
+
+    /** Output matrix. */
+    Matrix2d myOutput;
+
+    /** Bias value. */
+    double myBias;
+
+    /** Bias gradient. */
+    double myBiasGradient;
+
 };
 } // namespace ml::conv_layer

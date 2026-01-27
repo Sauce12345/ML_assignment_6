@@ -20,7 +20,7 @@ INCLUDE_DIR := -I include
 
 # Compiler flags.
 # Comment out the -DSTUB flag for using the real implementation.
-COMPILER_FLAGS := -Wall -Werror -std=c++17 -DSTUB
+COMPILER_FLAGS := -Wall -Werror -std=c++17 #-DSTUB
 
 # Build and run the target as default.
 default: build run
