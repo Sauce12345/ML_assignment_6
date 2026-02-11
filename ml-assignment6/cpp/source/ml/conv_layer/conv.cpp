@@ -1,3 +1,5 @@
+//! @note Bra överlag, men algoritmerna för feedforward, backpropagation samt optimization saknas.
+//!       Fick du uppladdat de rätta/den senaste versionen av din kod?
 #include <sstream>
 #include <stdexcept>
 
@@ -8,7 +10,6 @@
 
 namespace ml::conv_layer
 {
-
 Conv::Conv(const std::size_t inputSize, const std::size_t kernelSize, 
                 const act_func::Type actFunc)
     : myInputPadded{}
@@ -76,6 +77,8 @@ bool Conv::feedforward(const Matrix2d& input) noexcept
     constexpr const char* opName{"feedforward in convolutional layer"};
     return matchDimensions(myOutput.size(), input.size(), opName)
         && isMatrixSquare(input, opName);
+    //! @note Feedforward-algoritmen är inte implementerad.
+    //!       Är du säker på att du fick upp rätt implementation?
 }
 
 /**
@@ -91,6 +94,8 @@ bool Conv::backpropagate(const Matrix2d& outputGradients) noexcept
     constexpr const char* opName{"backpropagation in convolutional layer"};
     return matchDimensions(myOutput.size(), outputGradients.size(), opName)
         && isMatrixSquare(outputGradients, opName);
+    //! @note Backprop-algoritmen är inte implementerad.
+    //!       Är du säker på att du fick upp rätt implementation?
 }
 
 /**
@@ -105,6 +110,8 @@ bool Conv::optimize(const double learningRate) noexcept
     // Check the learning rate, return true if valid.
     constexpr const char* opName{"optimization in convolutional layer"};
     return checkLearningRate(learningRate, opName);
+    //! @note Optimize-algoritmen är inte implementerad.
+    //!       Är du säker på att du fick upp rätt implementation?
 }
 
  /**
@@ -146,5 +153,4 @@ void Conv::extractInputGradients() noexcept
         }
     }
 }
-
 } // namespace ml::conv_layer

@@ -1,3 +1,5 @@
+//! @note Stubbarna är inte utbytta mot de riktiga implementationerna, se @todo-kommentarerna.
+
 /** 
  * @brief Machine learning factory implementation details.
  */

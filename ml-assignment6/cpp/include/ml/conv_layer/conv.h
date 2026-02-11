@@ -1,3 +1,5 @@
+//! @note Denna headerfil ser mycket bra ut, snyggt!
+
 /**
  * @brief Convolutional layer interface.
  */
@@ -5,6 +7,7 @@
 
 #include <memory>
 
+//! @note Sträva efter att sortera headerfilerna alfabetiskt.
 #include "ml/types.h"
 #include "ml/act_func/type.h"
 #include "ml/conv_layer/interface.h"
@@ -94,7 +97,6 @@ public:
     Conv& operator=(Conv&&)      = delete; // No move assignment.
 
 private:
-
     /**
      * @brief Pad input with zeros.
      * 
@@ -113,9 +115,7 @@ private:
     /** Minimum valid kernel size. */
     static constexpr std::size_t kMaxKernelSize{11U};
 
-    // Lägg till medlemsvariabler, bland annat de från stubben. I övrigt, kolla medlemmar från L25.
-
-        /** Input matrix (padded with zeros). */
+    /** Input matrix (padded with zeros). */
     Matrix2d myInputPadded;
 
     /** Input gradient matrix (padded with zeros). */
@@ -138,6 +138,5 @@ private:
 
     /** Bias gradient. */
     double myBiasGradient;
-
 };
 } // namespace ml::conv_layer
