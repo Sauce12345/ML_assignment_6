@@ -124,6 +124,22 @@ bool checkLearningRate(double learningRate, const char* opName = nullptr) noexce
 double randomStartVal() noexcept;
 
 /**
+ * @brief ReLU activation function (output).
+ *
+ * @param[in] input Input value.
+ * @return Output after ReLU activation.
+ */
+double reluOutput(const double input) noexcept;
+
+/**
+ * @brief ReLU activation function (derivative).
+ *
+ * @param[in] input Input value.
+ * @return Derivative of ReLU at input.
+ */
+double reluDelta(const double input) noexcept;
+
+/**
  * @brief Create a training order list.
  * 
  * @param[in] trainSetCount The number of training sets.
