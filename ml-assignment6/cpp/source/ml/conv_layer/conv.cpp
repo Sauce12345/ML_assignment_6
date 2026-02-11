@@ -1,5 +1,5 @@
-//! @note Bra överlag, men algoritmerna för feedforward, backpropagation samt optimization saknas.
-//!       Fick du uppladdat de rätta/den senaste versionen av din kod?
+//! @note Efter dina ändringar ser det mycket bra ut här, snyggt!
+
 #include <sstream>
 #include <stdexcept>
 

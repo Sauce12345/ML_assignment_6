@@ -1,4 +1,4 @@
-//! @note Stubbarna är inte utbytta mot de riktiga implementationerna, se @todo-kommentarerna.
+//! @note Utmärkt efter dina senaste ändringar, grymt!
 
 /** 
  * @brief Machine learning factory implementation details.
@@ -36,7 +36,6 @@ ActFuncPtr Factory::actFunc(const act_func::Type type)
 ConvLayerPtr Factory::convLayer(const std::size_t inputSize, const std::size_t kernelSize, 
                              const act_func::Type actFunc) 
 {
-    ///! @todo Replace conv_layer::ConvStub with conv_layer::Conv when implemented.
     return std::make_unique<conv_layer::Conv>(inputSize, kernelSize, actFunc);
 }
 
