@@ -35,7 +35,7 @@ ConvLayerPtr Factory::convLayer(const std::size_t inputSize, const std::size_t k
                              const act_func::Type actFunc) 
 {
     ///! @todo Replace conv_layer::ConvStub with conv_layer::Conv when implemented.
-    return std::make_unique<conv_layer::ConvStub>(inputSize, kernelSize, actFunc);
+    return std::make_unique<conv_layer::Conv>(inputSize, kernelSize, actFunc);
 }
 
 // -----------------------------------------------------------------------------

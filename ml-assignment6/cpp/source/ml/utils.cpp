@@ -195,6 +195,12 @@ double randomStartVal() noexcept
 }
 
 // -----------------------------------------------------------------------------
+double reluOutput(const double input) noexcept { return 0.0 < input ? input : 0.0; }
+
+// -----------------------------------------------------------------------------
+double reluDelta(const double input) noexcept { return 0.0 < input ? 1.0 : 0.0; }
+
+// -----------------------------------------------------------------------------
 TrainOrderList createTrainOrderList(const std::size_t trainSetCount)
 {
     // Create a new training order list.

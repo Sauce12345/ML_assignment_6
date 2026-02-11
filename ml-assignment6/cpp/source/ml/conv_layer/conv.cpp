@@ -34,10 +34,21 @@ Conv::Conv(const std::size_t inputSize, const std::size_t kernelSize,
             "Failed to create convolutional layer: kernel size cannot be greater than input size!");
     }
 
+    const std::size_t padOffset{kernelSize / 2U};
+
+    const std::size_t paddedSize{inputSize + 2U * padOffset};
+
     // Initialize the matrices with zeros.
     initMatrix(myInputGradients, inputSize);
     initMatrix(myKernel, kernelSize);
     initMatrix(myOutput, inputSize);
+    initMatrix(myInputPadded, paddedSize);
+    initMatrix(myInputGradientsPadded, paddedSize);
+    initMatrix(myKernelGradients, kernelSize);
+
+    for (std::size_t ki{}; ki < myKernel.size(); ++ki)
+        for (std::size_t kj{}; kj < myKernel.size(); ++kj)
+            myKernel[ki][kj] = randomStartVal();
 
     // Ignore activation function in this implementation.
     (void) (actFunc);
@@ -72,10 +83,34 @@ const Matrix2d& Conv::inputGradients() const noexcept { return myInputGradients;
  */
 bool Conv::feedforward(const Matrix2d& input) noexcept
 {
-    // Return true if the input matches the expected (unpadded) output size.
     constexpr const char* opName{"feedforward in convolutional layer"};
-    return matchDimensions(myOutput.size(), input.size(), opName)
-        && isMatrixSquare(input, opName);
+    if (!matchDimensions(myOutput.size(), input.size(), opName)
+        || !isMatrixSquare(input, opName))
+    {
+        return false;
+    }
+
+    padInput(input);
+
+    for (std::size_t i{}; i < myOutput.size(); ++i)
+    {
+        for (std::size_t j{}; j < myOutput.size(); ++j)
+        {
+            double sum{myBias};
+
+            for (std::size_t ki{}; ki < myKernel.size(); ++ki)
+            {
+                for (std::size_t kj{}; kj < myKernel.size(); ++kj)
+                {
+                    sum += myInputPadded[i + ki][j + kj] * myKernel[ki][kj];
+                }
+            }
+
+            myOutput[i][j] = reluOutput(sum);  // ev. aktiveringsfunktion här
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -87,10 +122,40 @@ bool Conv::feedforward(const Matrix2d& input) noexcept
  */
 bool Conv::backpropagate(const Matrix2d& outputGradients) noexcept
 {
-    // Return true if the output dimensions match.
     constexpr const char* opName{"backpropagation in convolutional layer"};
-    return matchDimensions(myOutput.size(), outputGradients.size(), opName)
-        && isMatrixSquare(outputGradients, opName);
+    if (!matchDimensions(myOutput.size(), outputGradients.size(), opName)
+        || !isMatrixSquare(outputGradients, opName))
+    {
+        return false;
+    }
+
+    initMatrix(myInputGradientsPadded);
+    initMatrix(myInputGradients);
+    initMatrix(myKernelGradients);
+    myBiasGradient = 0.0;
+
+    for (std::size_t i{}; i < myOutput.size(); ++i)
+    {
+        for (std::size_t j{}; j < myOutput.size(); ++j)
+        {
+            const double delta{outputGradients[i][j]};
+
+            myBiasGradient += delta;
+
+            for (std::size_t ki{}; ki < myKernel.size(); ++ki)
+            {
+                for (std::size_t kj{}; kj < myKernel.size(); ++kj)
+                {
+                    myKernelGradients[ki][kj] += myInputPadded[i + ki][j + kj] * delta;
+
+                    myInputGradientsPadded[i + ki][j + kj] += myKernel[ki][kj] * delta;
+                }
+            }
+        }
+    }
+
+    extractInputGradients();
+    return true;
 }
 
 /**
@@ -102,9 +167,23 @@ bool Conv::backpropagate(const Matrix2d& outputGradients) noexcept
  */
 bool Conv::optimize(const double learningRate) noexcept 
 {
-    // Check the learning rate, return true if valid.
     constexpr const char* opName{"optimization in convolutional layer"};
-    return checkLearningRate(learningRate, opName);
+    if (!checkLearningRate(learningRate, opName))
+    {
+        return false;
+    }
+
+    myBias -= myBiasGradient * learningRate;
+
+    for (std::size_t ki{}; ki < myKernel.size(); ++ki)
+    {
+        for (std::size_t kj{}; kj < myKernel.size(); ++kj)
+        {
+            myKernel[ki][kj] -= myKernelGradients[ki][kj] * learningRate;
+        }
+    }
+
+    return true;
 }
 
  /**
